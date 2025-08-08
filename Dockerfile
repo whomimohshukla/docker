@@ -1,15 +1,28 @@
-FROM ubuntu
+# Use a Node.js image as the base
 
-RUN apt-get update
-RUN apt-get install -y curl
-RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
-RUN apt-get upgrade -y
-RUN apt-get install -y nodejs
+FROM node:22-alpine
 
-COPY package.json package.json
-COPY package-lock.json package-lock.json
-COPY index.js index.js
+
+# Set the working directory
+
+WORKDIR /app
+
+# Copy package.json and package-lock.json to install dependencies
+
+COPY package*.json ./
+
+# Install dependencies
 
 RUN npm install
 
-ENTRYPOINT [ "node", "index.js" ]
+# Copy the rest of the application code
+
+COPY . .
+
+# Expose the port your app will listen on
+
+EXPOSE 3000
+
+# Start the app
+
+CMD ["node", "index.js"]
